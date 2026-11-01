@@ -1,0 +1,68 @@
+# AI-written (Claude, Anthropic): lightly tested, read it before you build it. See README.md.
+#
+# Iris World Uniforms: gives Iris shader packs the world uniforms Horizon still zeroes
+# (cloudHeight, bedrockLevel, heightLimit, logicalHeightLimit, isRightHanded, endFlashIntensity,
+# previousEndFlashIntensity, endFlashPosition). Without cloudHeight, BSL and Complementary draw
+# their clouds at Y=0.
+#
+# How: the uniforms ride along as the pack's own custom uniforms (shaders.properties'
+# `uniform.*`), put in front of the pack's when it loads, so Horizon's existing custom-uniform
+# path uploads them to every program. Their values are read each frame from constants the
+# game sets. No struct, constant or render code of Horizon's is changed.
+
+[mod]
+id = "iris_world"
+version = "1.0.0"
+
+[compatibility]
+# Nightly 2026-11-01 (4aa6854), the version the launcher plays.
+horizon_revision = "4aa6854a886183440256f4f4a4a9d1ed853227a1"
+
+# The values, shared between the game (writes) and the shader crate (reads).
+[[module]]
+id = "state"
+file = "crates/horizon-shaders/src/lib.rs"
+name = "iris_world"
+source = "state.rs"
+visibility = "pub"
+
+# Adds the uniforms to a pack's custom uniforms, and turns the values into constants.
+[[module]]
+id = "items"
+file = "crates/horizon-shaders/src/custom.rs"
+name = "iris_world_items"
+source = "items.rs"
+
+# The End flash, which only the End's own module can read.
+[[module]]
+id = "flash"
+file = "crates/horizon-client/src/game/end.rs"
+name = "iris_world_flash"
+source = "flash.rs"
+
+[[injection]]
+id = "add-uniforms"
+target = "horizon_shaders::custom::Custom::parse"
+kind = "RETURN"
+helper = "add_uniforms.rs"
+bindings = [{ name = "value", ty = "Custom", value = "$value" }]
+
+[[injection]]
+id = "frame-values"
+target = "horizon_shaders::custom::Custom::eval"
+kind = "HEAD"
+helper = "frame_values.rs"
+bindings = [
+  { name = "custom", ty = "&mut Custom", value = "&mut *self" },
+  { name = "builtin", ty = "&dyn Fn(&str) -> Option<Val>", value = "builtin" },
+]
+
+[[injection]]
+id = "game-values"
+target = "horizon_client::game::shader_packs::Game<'_>::shader_pack_inputs"
+kind = "HEAD"
+helper = "game_values.rs"
+bindings = [
+  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
+  { name = "partial", ty = "f32", value = "partial" },
+]
