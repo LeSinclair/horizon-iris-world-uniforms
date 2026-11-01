@@ -17,15 +17,29 @@ Horizon reads as zero:
 | `isRightHanded` | the Main Hand option |
 | `endFlashIntensity`, `previousEndFlashIntensity`, `endFlashPosition` | the End's sky flash (zero outside the End) |
 
+## Second mod: Shader Pack World Reset
+
+`shader_pack_world_reset/` is a separate mod in the same repository. Horizon kept an Iris shader
+pack loaded from one world to the next, so whatever the last world left in buffers the pack keeps
+between frames stayed on screen. With BSL, the block outline you had selected when you left a
+world floated in the next one, in world space, until the pack was turned off and on. This mod does
+what turning the pack off and on does whenever a world closes (single player, a LAN host, or
+leaving a server), so every world starts with a fresh pack, as with Iris. The pack loads again
+when the next world opens (about a quarter of a second for BSL).
+
+Hooks: HEAD on `Game::finish_close_world` and `Game::leave_server`; support module `reset.rs` in
+`game.rs`. Checked with horizon-mixins `apply` and `cargo check` (no warnings, together with
+`iris_world`); not tried in game yet.
+
 ## Install
 
 From the launcher's Mods page ("Add from GitHub") with this repository's link, or:
 
 ```sh
-horizon-launcher mods add-github https://github.com/LeSinclair/horizon-iris-world-uniforms --trust-native-code
+horizon-launcher mods add-github https://github.com/LeSinclair/horizon-iris-world-uniforms --all --trust-native-code
 ```
 
-or from a clone:
+(`--all` installs both mods; `--mod iris_world` or `--mod shader_pack_world_reset` picks one), or from a clone:
 
 ```sh
 horizon-launcher native-build path/to/horizon-iris-world-uniforms/iris_world --instance <name> --trust-native-code

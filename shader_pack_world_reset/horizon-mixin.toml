@@ -1,0 +1,38 @@
+# AI-written (Claude, Anthropic): lightly tested, read it before you build it. See README.md.
+#
+# Shader Pack World Reset: a shader pack starts fresh in every world. Horizon kept an Iris pack
+# (its buffers and per-frame history) loaded from one world to the next, so what the last world
+# left in buffers the pack doesn't clear stayed on screen: the block outline selected when the
+# world closed floated in the next one, in world space, until the pack was turned off and on.
+# Iris builds the pipeline again for every world; this does what turning the pack off and on does,
+# whenever a world closes.
+
+[mod]
+id = "shader_pack_world_reset"
+version = "1.0.0"
+
+[compatibility]
+# Nightly 2026-11-01 (4aa6854).
+horizon_revision = "4aa6854a886183440256f4f4a4a9d1ed853227a1"
+
+[[module]]
+id = "reset"
+file = "crates/horizon-client/src/game.rs"
+name = "shader_pack_world_reset"
+source = "reset.rs"
+
+# A single-player world (and a LAN host) closing, after its save.
+[[injection]]
+id = "close-world"
+target = "horizon_client::game::Game<'_>::finish_close_world"
+kind = "HEAD"
+helper = "on_close.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
+
+# Leaving a server (or being disconnected from one).
+[[injection]]
+id = "leave-server"
+target = "horizon_client::game::remote::Game<'_>::leave_server"
+kind = "HEAD"
+helper = "on_leave.rs"
+bindings = [{ name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" }]
