@@ -40,12 +40,14 @@ file = "crates/horizon-client/src/game/end.rs"
 name = "iris_world_flash"
 source = "flash.rs"
 
+# The game calls set_biomes on every pack it loads, right after load_post and before the renderer
+# reads the custom uniforms' names.
 [[injection]]
 id = "add-uniforms"
-target = "horizon_shaders::custom::Custom::parse"
-kind = "RETURN"
+target = "horizon_shaders::custom::Custom::set_biomes"
+kind = "HEAD"
 helper = "add_uniforms.rs"
-bindings = [{ name = "value", ty = "Custom", value = "$value" }]
+bindings = [{ name = "custom", ty = "&mut Custom", value = "&mut *self" }]
 
 [[injection]]
 id = "frame-values"

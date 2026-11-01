@@ -2,8 +2,8 @@
 
 > [!WARNING]
 > **This mod was written by AI** (Claude, Anthropic's AI assistant), not by a person, and has had
-> only light testing: it compiles and its values were checked in a unit test, but it hasn't been
-> played with in game. Like every Horizon native mod it is **not sandboxed**: it compiles into the
+> only light testing: horizon-mixins applies it, the game compiles with it and its values were
+> checked in a unit test, but it hasn't been played with in game. Like every Horizon native mod it is **not sandboxed**: it compiles into the
 > game and runs with your rights. Read the source before you build it, and use it at your own risk.
 
 A native mod (a [horizon-mixins](https://github.com/horizon-rust/horizon-mixins) bundle) for
@@ -56,24 +56,23 @@ A name the pack defines itself stays the pack's.
 | `state.rs` | module `horizon_shaders::iris_world`: this frame's values, the End flash maths, a test |
 | `items.rs` | module in `horizon-shaders/src/custom.rs`: adds the uniforms, sets the constants |
 | `flash.rs` | module in `game/end.rs`: reads the End flash |
-| `add_uniforms.rs` | RETURN hook on `Custom::parse` |
+| `add_uniforms.rs` | HEAD hook on `Custom::set_biomes` (the game calls it on every pack it loads, before the renderer reads the uniform names) |
 | `frame_values.rs` | HEAD hook on `Custom::eval` |
 | `game_values.rs` | HEAD hook on `Game::shader_pack_inputs` |
 
 ## Testing done
 
-`dev/simulate.py` applies the bundle by hand to a Horizon checkout of the pinned commit, as
-horizon-mixins would (`python3 dev/simulate.py <horizon checkout> iris_world`). With it applied:
+With horizon-mixins at the launcher's pinned commit (`a2af5c0`), `plan` and `apply` succeed on the
+pinned Horizon source. On the staged source:
 
 - `cargo check -p horizon-client` passes without warnings;
 - a probe test parsed a pack with `uniform.float.myClouds = cloudHeight + 1` and
   `uniform.int.heightLimit = 7` and got every value right (the pack's own `heightLimit` kept,
   `myClouds` saw NaN, the End flash position straight up);
-- four of Horizon's own `custom::tests` fail, only because they count a pack's uniforms (the
+- four of Horizon's own `custom::tests` would fail, only because they count a pack's uniforms (the
   launcher doesn't run them).
 
-Not done yet: a run of horizon-mixins' planner itself (the launcher's build is the first), and
-playing with a pack in game. Issues and fixes welcome.
+Not done yet: playing with a pack in game. Issues and fixes welcome.
 
 ## License
 

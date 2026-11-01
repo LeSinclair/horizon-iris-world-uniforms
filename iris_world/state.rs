@@ -1,5 +1,5 @@
-//! Iris World Uniforms (native mod `iris_world`): this frame's values of the Iris world uniforms
-//! Horizon doesn't provide, set by the game, read when the pack's custom uniforms are evaluated.
+// Iris World Uniforms (native mod `iris_world`): this frame's values of the Iris world uniforms
+// Horizon doesn't provide, set by the game, read when the pack's custom uniforms are evaluated.
 
 use std::sync::Mutex;
 

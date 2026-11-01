@@ -1,4 +1,4 @@
-//! Iris World Uniforms (native mod `iris_world`): the End flash for shader packs.
+// Iris World Uniforms (native mod `iris_world`): the End flash for shader packs.
 
 use super::{Dim, Game};
 

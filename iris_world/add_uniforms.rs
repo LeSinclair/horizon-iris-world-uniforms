@@ -1,5 +1,3 @@
-fn add_uniforms(value: Custom) -> Custom {
-    let mut custom = value;
-    iris_world_items::add(&mut custom);
-    custom
+fn add_uniforms(custom: &mut Custom) {
+    iris_world_items::add(custom);
 }

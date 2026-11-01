@@ -1,4 +1,4 @@
-//! Iris World Uniforms (native mod `iris_world`): the uniforms as custom uniforms of the pack.
+// Iris World Uniforms (native mod `iris_world`): the uniforms as custom uniforms of the pack.
 
 use super::{Custom, Expr, Item, Val};
 use crate::iris_world::{UNIFORMS, constant, end_flash_position, get};
