@@ -2,11 +2,10 @@
 
 use super::{Dim, Game};
 
-/// `(intensity, previous intensity, [xAngle, yAngle])`; zero outside the End.
-pub(crate) fn get(game: &Game<'_>, partial: f32) -> (f32, f32, [f32; 2]) {
+/// The previous tick's flash intensity; zero outside the End.
+pub(crate) fn previous(game: &Game<'_>) -> f32 {
     if game.dim != Dim::End {
-        return (0.0, 0.0, [0.0; 2]);
+        return 0.0;
     }
-    let flash = &game.end.flash;
-    (flash.intensity(partial), flash.old_intensity, [flash.x_angle, flash.y_angle])
+    game.end.flash.old_intensity
 }

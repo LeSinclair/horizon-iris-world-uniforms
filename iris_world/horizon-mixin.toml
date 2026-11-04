@@ -1,22 +1,22 @@
 # AI-written (Claude, Anthropic): lightly tested, read it before you build it. See README.md.
 #
-# Iris World Uniforms: gives Iris shader packs the world uniforms Horizon still zeroes
-# (cloudHeight, bedrockLevel, heightLimit, logicalHeightLimit, isRightHanded, endFlashIntensity,
-# previousEndFlashIntensity, endFlashPosition). Without cloudHeight, BSL and Complementary draw
-# their clouds at Y=0.
+# Iris World Uniforms: gives Iris shader packs the world uniform Horizon still lacks,
+# previousEndFlashIntensity (the End flash a tick ago). Since Nightly 2026-11-04 Horizon gives
+# cloudHeight, bedrockLevel, heightLimit, logicalHeightLimit, isRightHanded, endFlashIntensity and
+# endFlashPosition itself, so 2.0.0 adds only that one.
 #
-# How: the uniforms ride along as the pack's own custom uniforms (shaders.properties'
+# How: the uniform rides along as the pack's own custom uniforms (shaders.properties'
 # `uniform.*`), put in front of the pack's when it loads, so Horizon's existing custom-uniform
-# path uploads them to every program. Their values are read each frame from constants the
+# path uploads it to every program. Its value is read each frame from constants the
 # game sets. No struct, constant or render code of Horizon's is changed.
 
 [mod]
 id = "iris_world"
-version = "1.0.0"
+version = "2.0.0"
 
 [compatibility]
-# Nightly 2026-11-01 (4aa6854), the version the launcher plays.
-horizon_revision = "4aa6854a886183440256f4f4a4a9d1ed853227a1"
+# Nightly 2026-11-04 (6475f62).
+horizon_revision = "6475f62f3c834b7489e1816bf47f47ea5eb2b879"
 
 # The values, shared between the game (writes) and the shader crate (reads).
 [[module]]
@@ -64,7 +64,4 @@ id = "game-values"
 target = "horizon_client::game::shader_packs::Game<'_>::shader_pack_inputs"
 kind = "HEAD"
 helper = "game_values.rs"
-bindings = [
-  { name = "game", ty = "&crate::game::Game<'_>", value = "&*self" },
-  { name = "partial", ty = "f32", value = "partial" },
-]
+bindings = [{ name = "game", ty = "&crate::game::Game<'_>", value = "&*self" }]

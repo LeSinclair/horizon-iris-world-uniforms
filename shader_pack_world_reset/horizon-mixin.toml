@@ -9,11 +9,11 @@
 
 [mod]
 id = "shader_pack_world_reset"
-version = "1.0.0"
+version = "1.1.0"
 
 [compatibility]
-# Nightly 2026-11-01 (4aa6854).
-horizon_revision = "4aa6854a886183440256f4f4a4a9d1ed853227a1"
+# Nightly 2026-11-04 (6475f62).
+horizon_revision = "6475f62f3c834b7489e1816bf47f47ea5eb2b879"
 
 [[module]]
 id = "reset"
